@@ -29,9 +29,9 @@
 #define HTTP_NAME_OPTIONS_VAR "opt"
 #define HTTP_NAME_SERVER_VAR "svr"
 #define HTTP_NAME_CHUNKED "chunked"
-#define HTTP_NAME_CLOSENOW "closeNow"  // boolean: gotta close
+#define HTTP_NAME_CLOSENOW "clsNow"  // boolean: gotta close
 #define HTTP_NAME_CONNECTED "conn"     // boolean: we are connected
-#define HTTP_NAME_CLOSE "close"        // close after sending
+#define HTTP_NAME_CLOSE "cls"        // close after sending
 #define HTTP_NAME_ON_CONNECT JS_EVENT_PREFIX"connect"
 #define HTTP_NAME_ON_CLOSE JS_EVENT_PREFIX"close"
 #define HTTP_NAME_ON_END JS_EVENT_PREFIX"end"
@@ -681,7 +681,7 @@ void serverListen(JsNetwork *net, JsVar *server, int port) {
 
   int sckt = netCreateSocket(net, 0/*server*/, (unsigned short)port, NCF_NORMAL, 0 /*options*/);
   if (sckt<0) {
-    jsError("Unable to create socket\n");
+    jsExceptionHere(JSET_INTERNALERROR, "Unable to create socket\n");
     jsvObjectSetChildAndUnLock(server, HTTP_NAME_CLOSENOW, jsvNewFromBool(true));
   } else {
     jsvObjectSetChildAndUnLock(server, HTTP_NAME_SOCKET, jsvNewFromInteger(sckt+1));
@@ -826,7 +826,7 @@ void clientRequestConnect(JsNetwork *net, JsVar *httpClientReqVar) {
   networkGetHostByName(net, hostName, &host_addr);
 
   if(!host_addr) {
-    jsError("Unable to locate host\n");
+    jsExceptionHere(JSET_INTERNALERROR, "Unable to locate host\n");
     // As this is already in the list of connections, an error will be thrown on idle anyway
     jsvObjectSetChildAndUnLock(httpClientReqVar, HTTP_NAME_CLOSENOW, jsvNewFromBool(true));
     jsvUnLock(options);
@@ -846,7 +846,7 @@ void clientRequestConnect(JsNetwork *net, JsVar *httpClientReqVar) {
 
   int sckt =  netCreateSocket(net, host_addr, port, flags, options);
   if (sckt<0) {
-    jsError("Unable to create socket\n");
+    jsExceptionHere(JSET_INTERNALERROR, "Unable to create socket\n");
     // As this is already in the list of connections, an error will be thrown on idle anyway
     jsvObjectSetChildAndUnLock(httpClientReqVar, HTTP_NAME_CLOSENOW, jsvNewFromBool(true));
   } else {

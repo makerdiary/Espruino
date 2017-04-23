@@ -18,6 +18,7 @@ import pinutils;
 info = {
  'name' : "RuuviTag",
  'link' :  [ "https://ruuvitag.com" ],
+ 'espruino_page_link' : 'Ruuvitag',
  'default_console' : "EV_SERIAL1",
  'default_console_tx' : "D4",
  'default_console_rx' : "D5",
@@ -25,7 +26,7 @@ info = {
  # Number of variables can be WAY higher on this board
  'variables' : 2000, # How many variables are allocated for Espruino to use. RAM will be overflowed if this number is too high and code won't compile.
  'bootloader' : 1,
- 'binary_name' : 'espruino_%v_ruuvitag.bin',
+ 'binary_name' : 'espruino_%v_ruuvitag.hex',
  'build' : {
    'optimizeflags' : '-Os',
    'libraries' : [
@@ -59,10 +60,10 @@ chip = {
   'adc' : 1,
   'dac' : 0,
   'saved_code' : {
-    'address' : ((117 - 3) * 4096), # Bootloader takes pages 117-127 on RuuviTag
+    'address' : ((115 - 3) * 4096), # Bootloader takes pages 117-127 on RuuviTag, FS takes 115-116
     'page_size' : 4096,
     'pages' : 3,
-    'flash_available' : 512 - ((31 + 11 + 3)*4) # Softdevice uses 31 pages of flash, bootloader 11, code 3. Each page is 4 kb.
+    'flash_available' : 512 - ((31 + 11 + 1 + 3)*4) # Softdevice uses 31 pages of flash, bootloader 11, code 3. Each page is 4 kb.
   },
 };
 
