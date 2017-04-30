@@ -16,11 +16,11 @@
 #include "jshardwarePWM.h"
 #include "jshardwarePulse.h"
 #include "jshardwareSpi.h"
+#include "jswrap_wifi.h" // jswrap_wifi_restore
 
 #include "esp_spi_flash.h"
 #include "spi_flash/include/esp_partition.h"
-
-extern void jswrap_ESP32_wifi_restore(void) ;
+#include "esp_log.h"
 
 extern void initialise_wifi(void);
 
@@ -33,12 +33,11 @@ static void uartTask(void *data) {
 }
 
 static void timerTask(void *data) {
-  vTaskDelay(500 / portTICK_PERIOD_MS);
   timers_Init();
   timer_Init("EspruinoTimer",0,0,0);
   while(1) {
     taskWaitNotify();
-	jstUtilTimerInterruptHandler();
+    jstUtilTimerInterruptHandler();
   }
 }
 
@@ -49,9 +48,10 @@ static void espruinoTask(void *data) {
   SPIChannelsInit();
   initADC(1);
   jshInit();     // Initialize the hardware
-  jswrap_ESP32_wifi_restore();
+  jswrap_wifi_restore();
   jsvInit();     // Initialize the variables
-  vTaskDelay(1000 / portTICK_PERIOD_MS);
+  // not sure why this delay is needed?
+  vTaskDelay(200 / portTICK_PERIOD_MS);
   jsiInit(true); // Initialize the interactive subsystem
   while(1) {
     jsiLoop();   // Perform the primary loop processing
@@ -66,6 +66,7 @@ char* romdata_jscode=0;
  */
 int app_main(void)
 {
+  esp_log_level_set("*", ESP_LOG_ERROR); // set all components to ERROR level - suppress Wifi Info 
   nvs_flash_init();
   spi_flash_init();
   tcpip_adapter_init();
