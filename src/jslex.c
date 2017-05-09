@@ -821,11 +821,12 @@ JsVar *jslNewFromLexer(JslCharPos *charFrom, size_t charTo) {
     block->varData.str[blockChars++] = ch;
     jsvStringIteratorNext(&it);
   }
-  jsvStringIteratorFree(&it);
   jsvSetCharactersInVar(block, blockChars);
   jsvUnLock(block);
-  // Just make sure we only assert if there's a bug here. If we just ran out of memory it's ok
-  assert((l == jsvGetStringLength(var)) || (jsErrorFlags&JSERR_MEMORY));
+  // Just make sure we only assert if there's a bug here. If we just ran out of memory or at end of string it's ok
+  assert((l == jsvGetStringLength(var)) || (jsErrorFlags&JSERR_MEMORY) || !jsvStringIteratorHasChar(&it));
+  jsvStringIteratorFree(&it);
+  
 
   return var;
 }
@@ -862,7 +863,10 @@ void jslPrintTokenLineMarker(vcbprintf_callback user_callback, void *user_data, 
     cbprintf(user_callback, user_data, "...");
     size_t skipChars = tokenPos-30 - startOfLine;
     startOfLine += 3+skipChars;
-    col -= skipChars;
+    if (skipChars<=col)
+      col -= skipChars;
+    else
+      col = 0;
     lineLength -= skipChars;
   }
 
