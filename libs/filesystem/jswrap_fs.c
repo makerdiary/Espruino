@@ -136,7 +136,9 @@ JsVar *jswrap_fs_readdir(JsVar *path) {
           }
         }
       }
-#ifdef LINUX
+#ifndef LINUX
+      f_closedir(&dirs);
+#else
       closedir(dir);
 #endif
     }
@@ -330,6 +332,7 @@ JsVar *jswrap_fs_stat(JsVar *path) {
   FRESULT res = 0;
   if (jsfsInit()) {
     FILINFO info;
+    memset(&info,0,sizeof(info));
     res = f_stat(pathStr, &info);
     if (res==0 /*ok*/) {
       JsVar *obj = jsvNewObject();
