@@ -40,7 +40,9 @@ info = {
      #'TLS'
    ],
    'makefile' : [
-     'DEFINES += -DBOARD_PCA10040 -DPCA10040'
+     'DEFINES+=-DHAL_NFC_ENGINEERING_BC_FTPAN_WORKAROUND=1', # Looks like proper production nRF52s had this issue
+     'DFU_PRIVATE_KEY=targets/nrf5x_dfu/dfu_private_key.pem',
+     'DFU_SETTINGS=--application-version 0xff --hw-version 52 --sd-req 0x8C'
    ]
  }
 };
@@ -58,7 +60,7 @@ chip = {
   'adc' : 1,
   'dac' : 0,
   'saved_code' : {
-    'address' : ((120 - 3) * 4096), # Bootloader takes pages 120-127
+    'address' : ((118 - 3) * 4096), # Bootloader takes pages 120-127
     'page_size' : 4096,
     'pages' : 3,
     'flash_available' : 512 - ((31 + 8 + 3)*4) # Softdevice uses 31 pages of flash, bootloader 8, code 3. Each page is 4 kb. 
