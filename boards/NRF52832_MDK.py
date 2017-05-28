@@ -24,7 +24,7 @@ info = {
  'default_console_baudrate' : "9600",
  # Number of variables can be WAY higher on this board
  'variables' : 2000, # How many variables are allocated for Espruino to use. RAM will be overflowed if this number is too high and code won't compile.
- #'bootloader' : 1,
+ 'bootloader' : 1,
  'binary_name' : 'espruino_%v_nrf52832_mdk.bin',
  'build' : {
    'optimizeflags' : '-Os',
@@ -40,7 +40,9 @@ info = {
      #'TLS'
    ],
    'makefile' : [
-     'DEFINES += -DBOARD_PCA10040 -DPCA10040'
+     'DEFINES+=-DHAL_NFC_ENGINEERING_BC_FTPAN_WORKAROUND=1', # Looks like proper production nRF52s had this issue
+     'DFU_PRIVATE_KEY=targets/nrf5x_dfu/dfu_private_key.pem',
+     'DFU_SETTINGS=--application-version 0xff --hw-version 52 --sd-req 0x8C'
    ]
  }
 };
@@ -58,7 +60,7 @@ chip = {
   'adc' : 1,
   'dac' : 0,
   'saved_code' : {
-    'address' : ((120 - 3) * 4096), # Bootloader takes pages 120-127
+    'address' : ((118 - 3) * 4096), # Bootloader takes pages 120-127
     'page_size' : 4096,
     'pages' : 3,
     'flash_available' : 512 - ((31 + 8 + 3)*4) # Softdevice uses 31 pages of flash, bootloader 8, code 3. Each page is 4 kb. 
@@ -69,6 +71,7 @@ devices = {
   'LED1' : { 'pin' : 'D22', 'inverted' : False},
   'LED2' : { 'pin' : 'D23', 'inverted' : False},
   'LED3' : { 'pin' : 'D24', 'inverted' : False},
+  'BTN1' : { 'pin' : 'D3', 'pinstate' : 'IN_PULLDOWN' },
   'RX_PIN_NUMBER' : { 'pin' : 'D19'},
   'TX_PIN_NUMBER' : { 'pin' : 'D20'},
 };

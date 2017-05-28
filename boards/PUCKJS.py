@@ -40,6 +40,7 @@ info = {
      #'TLS'
    ],
    'makefile' : [
+     'DEFINES+=-DHAL_NFC_ENGINEERING_BC_FTPAN_WORKAROUND=1', # Looks like proper production nRF52s had this issue
      'DFU_PRIVATE_KEY=targets/nrf5x_dfu/dfu_private_key.pem',
      'DFU_SETTINGS=--application-version 0xff --hw-version 52 --sd-req 0x8C'
    ]
@@ -78,7 +79,7 @@ devices = {
            'pin_int':'D17',
            'pin_sda':'D20',
            'pin_scl':'D19' }
-
+  # Pin D22 is used for clock when driving neopixels - as not specifying a pin seems to break things
 };
 
 # left-right, or top-bottom order

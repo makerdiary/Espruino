@@ -41,6 +41,7 @@ info = {
      #'TLS'
    ],
    'makefile' : [
+     'DEFINES+=-DHAL_NFC_ENGINEERING_BC_FTPAN_WORKAROUND=1', # Looks like proper production nRF52s had this issue
      'DFU_PRIVATE_KEY=targets/nrf5x_dfu/ruuvi_open_private.pem',
      'DFU_SETTINGS=--debug-mode'
    ]
@@ -86,6 +87,7 @@ devices = {
 #           'pin_int':'D17',
 #           'pin_sda':'D20',
 #           'pin_scl':'D19' }
+  # Pin D22 is used for clock when driving neopixels - as not specifying a pin seems to break things
 };
 
 # left-right, or top-bottom order
