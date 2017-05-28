@@ -24,7 +24,7 @@ info = {
  'default_console_baudrate' : "9600",
  # Number of variables can be WAY higher on this board
  'variables' : 2000, # How many variables are allocated for Espruino to use. RAM will be overflowed if this number is too high and code won't compile.
- #'bootloader' : 1,
+ 'bootloader' : 1,
  'binary_name' : 'espruino_%v_nrf52832_mdk.bin',
  'build' : {
    'optimizeflags' : '-Os',
@@ -71,6 +71,7 @@ devices = {
   'LED1' : { 'pin' : 'D22', 'inverted' : False},
   'LED2' : { 'pin' : 'D23', 'inverted' : False},
   'LED3' : { 'pin' : 'D24', 'inverted' : False},
+  'BTN1' : { 'pin' : 'D3', 'pinstate' : 'IN_PULLDOWN' },
   'RX_PIN_NUMBER' : { 'pin' : 'D19'},
   'TX_PIN_NUMBER' : { 'pin' : 'D20'},
 };
